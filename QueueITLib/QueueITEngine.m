@@ -12,6 +12,9 @@
 @property (nonatomic, strong)UIViewController* host;
 @property (nonatomic, strong)NSString* customerId;
 @property (nonatomic, strong)NSString* eventId;
+@property (nonatomic, strong)NSString* eventDomain;
+@property (nonatomic, strong)NSString* eventTargetURL;
+@property (nonatomic, strong)NSString* queueId;
 @property (nonatomic, strong)NSString* layoutName;
 @property (nonatomic, strong)NSString* language;
 @property int delayInterval;
@@ -45,6 +48,34 @@ static int INITIAL_WAIT_RETRY_SEC = 1;
     }
     return self;
 }
+
+-(instancetype)initWithHost:(UIViewController *)host
+                 customerId:(NSString *)customerId
+             eventOrAliasId:(NSString *)eventOrAliasId
+                eventDomain:(NSString *)eventDomain
+                  targetURL:(NSString*)targetURL
+                    queueId:(NSString *)queueId
+                 layoutName:(NSString *)layoutName
+                   language:(NSString *)language {
+    if (self = [super init]) {
+        self.cache = [QueueCache instance:customerId eventId:eventOrAliasId];
+        self.host = host;
+        self.customerId = customerId;
+        self.eventId = eventOrAliasId;
+        self.eventDomain = eventDomain;
+        self.queueId = queueId;
+        self.eventTargetURL = targetURL;
+        self.layoutName = layoutName;
+        self.language = language;
+        self.delayInterval = 0;
+        self.isInQueue = NO;
+        self.requestInProgress = NO;
+        self.internetReachability = [Reachability reachabilityForInternetConnection];
+        self.deltaSec = INITIAL_WAIT_RETRY_SEC;
+    }
+    return self;
+}
+
 
 -(void)setViewDelay:(int)delayInterval {
     self.delayInterval = delayInterval;
@@ -94,9 +125,13 @@ static int INITIAL_WAIT_RETRY_SEC = 1;
     
     self.requestInProgress = YES;
     
-    if (![self tryShowQueueFromCache]) {
+    NSString * queuURL = [self queueURL];
+    if (queuURL != NULL && self.eventTargetURL != NULL) {
+        [self showQueue:queuURL targetUrl:self.eventTargetURL];
+    } else if (![self tryShowQueueFromCache]) {
         [self tryEnqueue];
     }
+
     
 }
 
@@ -259,5 +294,16 @@ static int INITIAL_WAIT_RETRY_SEC = 1;
         [self.cache update:queuePageUrl urlTTL:urlTtlString targetUrl:targetUrl];
     }
 }
+
+-(NSString*)queueURL {
+    if (self.eventDomain != NULL && self.queueId != NULL) {
+        NSString * sdkVersion = [IOSUtils getSdkVersion];
+        NSString * urlFormat = @"http://%@/?c=%@&e=%@&q=%@&cid=%@&sdkv=%@";
+        NSString * queueURL = [NSString stringWithFormat:urlFormat,self.eventDomain,self.customerId,self.queueId, self.language, sdkVersion];
+        return queueURL;
+    }
+    return NULL;
+}
+
 
 @end
