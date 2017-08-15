@@ -52,6 +52,8 @@ typedef enum {
 
 @protocol QueueViewWillOpenDelegate <NSObject>
 -(void)notifyQueueViewWillOpen;
+@optional
+-(void)notifyQueueIdReceived:(NSString*)queueId;
 @end
 
 @protocol QueueDisabledDelegate <NSObject>
@@ -60,8 +62,6 @@ typedef enum {
 
 @protocol QueueITUnavailableDelegate <NSObject>
 -(void)notifyQueueITUnavailable: (NSString *) errorMessage;
-@optional
--(void)notifyQueueIdReceived:(NSString*)queueId;
 @end
 
 @protocol QueueUserExitedDelegate <NSObject>
