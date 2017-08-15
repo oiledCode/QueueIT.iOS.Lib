@@ -1,7 +1,7 @@
 #import "QueueITViewController.h"
 #import "QueueITEngine.h"
 
-@interface QueueITViewController ()<UIWebViewDelegate>
+@interface QueueITViewController ()<UIWebViewDelegate, NSURLConnectionDelegate>
 
 @property (nonatomic) UIWebView* webView;
 @property (nonatomic, strong) UIViewController* host;
@@ -11,6 +11,8 @@
 @property (nonatomic, strong)UIActivityIndicatorView* spinner;
 @property (nonatomic, strong)NSString* customerId;
 @property (nonatomic, strong)NSString* eventId;
+@property (nonatomic, strong)NSURLRequest *firstRequest;
+@property BOOL authenticated;
 @property BOOL isQueuePassed;
 
 @end
@@ -41,6 +43,7 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.authenticated = false;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -63,6 +66,12 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
 - (BOOL)webView:(UIWebView *)webView
     shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    if (!self.authenticated) {
+        self.firstRequest = request;
+        NSURLConnection * connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        [connection start];
+        return NO;
+    }
     if (!self.isQueuePassed) {
         NSString* urlString = [[request URL] absoluteString];
         NSString* targetUrlString = self.eventTargetUrl;
@@ -128,4 +137,17 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
     }];
 }
 
+#pragma MARK -  NSURLConnectionDelegate
+-(void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+            [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+    }
+    [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+}
+-(void)connection:(NSURLConnection*)connection didReceiveResponse:(nonnull NSURLResponse *)response {
+    self.authenticated = YES;
+    [connection cancel];
+    [self.webView loadRequest:self.firstRequest];
+    
+}
 @end
