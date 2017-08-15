@@ -88,6 +88,8 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
                     }
                     if ([targetUrl.host containsString:url.host]) {
                         self.isQueuePassed = YES;
+                        
+                        [self.engine.queuePassedDelegate notifyQueueItTokenReceived:[self queueItTokenWithURL:[request URL]]];
                         [self.engine raiseQueuePassed];
                         [self.host dismissViewControllerAnimated:YES completion:^{
                             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -135,6 +137,17 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
     [self.host dismissViewControllerAnimated:YES completion:^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     }];
+}
+
+-(NSString*)queueItTokenWithURL:(NSURL*)url {
+    NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:false];
+    NSArray *queryItems = urlComponents.queryItems;
+    for (NSURLQueryItem *item in queryItems) {
+        if ([item.name isEqualToString:@"queueittoken"]) {
+            return item.value;
+        }
+    }
+    return NULL;
 }
 
 #pragma MARK -  NSURLConnectionDelegate

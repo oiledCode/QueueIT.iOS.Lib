@@ -47,6 +47,7 @@ typedef enum {
 @end
 
 @protocol QueuePassedDelegate <NSObject>
+-(void)notifyQueueItTokenReceived:(NSString*)token;
 -(void)notifyYourTurn;
 @end
 
