@@ -196,12 +196,14 @@ static int INITIAL_WAIT_RETRY_SEC = 1;
          //SafetyNet
          if (queueStatus.queueId != (id)[NSNull null] && queueStatus.queueUrlString == (id)[NSNull null])
          {
+             [self.queueViewWillOpenDelegate notifyQueueIdReceived:queueStatus.queueId];
              [self raiseQueuePassed];
          }
          //InQueue
          else if (queueStatus.queueId != (id)[NSNull null] && queueStatus.queueUrlString != (id)[NSNull null])
          {
              self.queueUrlTtl = queueStatus.queueUrlTTL;
+             [self.queueViewWillOpenDelegate notifyQueueIdReceived:queueStatus.queueId];
              [self showQueue:queueStatus.queueUrlString targetUrl:queueStatus.eventTargetUrl];
              
              NSString* urlTtlString = [self convertTtlMinutesToSecondsString:queueStatus.queueUrlTTL];
