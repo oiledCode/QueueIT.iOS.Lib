@@ -65,21 +65,32 @@ static NSString * const API_ROOT = @"http://%@.queue-it.net/api/queue";
             }];
 }
 
--(void)getStatus:(NSString *)customerId eventId:(NSString *)eventId queueId:(NSString *)queueId configId:(NSString *)configId {
-    NSString * urlString = [NSString stringWithFormat:@"http://qoqa.queue-it.net/api/nativeapp/qoqa/%@/queue/%@/status", eventId, queueId];
-    [self submitPUTPath:urlString body:@{}
+-(void)getQueueStatus:(NSString *)customerId
+              eventId:(NSString *)eventId
+              queueId:(NSString *)queueId
+              success:(void (^)(BOOL))success
+              failure:(void (^)())failure {
+    NSString * urlString = [NSString stringWithFormat:@"http://%@.queue-it.net/api/nativeapp/qoqa/%@/queue/%@/status", customerId, eventId, queueId];
+    NSDictionary *body = @{@"configId" : @"not-used", @"widgets": @[]};
+    [self submitPUTPath:urlString body:body
                        success:^(NSData *data)
             {
                 NSError *error = nil;
                 NSDictionary *userDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
                 if (userDict && [userDict isKindOfClass:[NSDictionary class]])
                 {
-                    NSLog(@"%@",userDict);
+                    if (userDict[@"rejectDetails"] != nil) {
+                        success(false);
+                    } else {
+                        success(true);
+                    }
+                } else {
+                    success(false);
                 }
             }
             failure:^(NSError *error, NSString* errorMessage)
             {
-                NSLog(@"Error");
+                failure();
             }];
 }
 

@@ -297,6 +297,15 @@ static int INITIAL_WAIT_RETRY_SEC = 1;
     }
 }
 
++(void)getQueueStatus:(NSString *)customerId
+              eventId:(NSString *)eventId
+              queueId:(NSString *)queueId
+              success:(void (^)(BOOL))success
+              failure:(void (^)())failure {
+    QueueService * qs = [QueueService sharedInstance];
+    [qs getQueueStatus:customerId eventId:eventId queueId:queueId success:success failure:failure];
+}
+
 -(NSString*)queueURL {
     if (self.eventDomain != NULL && self.queueId != NULL && self.eventId != NULL) {
         NSString * sdkVersion = [IOSUtils getSdkVersion];

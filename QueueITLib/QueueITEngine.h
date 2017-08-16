@@ -44,6 +44,11 @@ typedef enum {
 -(void)raiseUserExited;
 -(void)updateQueuePageUrl:(NSString*)queuePageUrl;
 
++(void)getQueueStatus:(NSString *)customerId
+              eventId:(NSString *)eventId
+              queueId:(NSString *)queueId
+              success:(void(^)(BOOL))success
+              failure:(void(^)())failure;
 @end
 
 @protocol QueuePassedDelegate <NSObject>

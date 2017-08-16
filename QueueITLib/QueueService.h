@@ -17,7 +17,10 @@ typedef void (^QueueServiceFailure)(NSError *error, NSString* errorMessage);
             success:(void(^)(QueueStatus* queueStatus))success
             failure:(QueueServiceFailure)failure;
 
--(void)getStatus:(NSString*)customerId eventId:(NSString*)eventId queueId:(NSString*)queueId configId:(NSString*)configId;
-
+-(void)getQueueStatus:(NSString *)customerId
+              eventId:(NSString *)eventId
+              queueId:(NSString *)queueId
+              success:(void(^)(BOOL))success
+              failure:(void(^)())error;
 
 @end
