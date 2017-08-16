@@ -6,12 +6,12 @@
 @property (nonatomic) UIWebView* webView;
 @property (nonatomic, strong) UIViewController* host;
 @property (nonatomic, strong) QueueITEngine* engine;
-@property (nonatomic, strong)NSString* queueUrl;
-@property (nonatomic, strong)NSString* eventTargetUrl;
-@property (nonatomic, strong)UIActivityIndicatorView* spinner;
-@property (nonatomic, strong)NSString* customerId;
-@property (nonatomic, strong)NSString* eventId;
-@property (nonatomic, strong)NSURLRequest *firstRequest;
+@property (nonatomic, strong) NSString* queueUrl;
+@property (nonatomic, strong) NSString* eventTargetUrl;
+@property (nonatomic, strong) UIActivityIndicatorView* spinner;
+@property (nonatomic, strong) NSString* customerId;
+@property (nonatomic, strong) NSString* eventId;
+@property (nonatomic, strong) NSURLRequest *firstRequest;
 @property BOOL authenticated;
 @property BOOL isQueuePassed;
 
@@ -51,7 +51,14 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
     [self.spinner setColor:[UIColor grayColor]];
     [self.spinner startAnimating];
     
-    self.webView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
+    UIView *topBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 64.0)];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 64.0)];
+    [closeButton setTitle:@"close" forState:UIControlStateNormal];
+    [closeButton addTarget:self action:NSSelectorFromString(@"dismissController") forControlEvents:UIControlEventTouchUpInside];
+    [topBar addSubview:closeButton];
+    [self.view addSubview:topBar];
+    
+    self.webView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 64.0, self.view.bounds.size.width, self.view.bounds.size.height - 64.0)];
     [self.view addSubview:self.webView];
     [self.webView addSubview:self.spinner];
     
@@ -59,6 +66,12 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
     NSURLRequest *request = [NSURLRequest requestWithURL:urlAddress];
     [self.webView loadRequest:request];
     self.webView.delegate = self;
+}
+
+- (void)dismissController {
+    [self.host dismissViewControllerAnimated:YES completion:^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    }];
 }
 
 #pragma mark - UIWebViewDelegate
