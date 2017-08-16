@@ -298,10 +298,10 @@ static int INITIAL_WAIT_RETRY_SEC = 1;
 }
 
 -(NSString*)queueURL {
-    if (self.eventDomain != NULL && self.queueId != NULL) {
+    if (self.eventDomain != NULL && self.queueId != NULL && self.eventId != NULL) {
         NSString * sdkVersion = [IOSUtils getSdkVersion];
         NSString * urlFormat = @"http://%@/?c=%@&e=%@&q=%@&cid=%@&sdkv=%@";
-        NSString * queueURL = [NSString stringWithFormat:urlFormat,self.eventDomain,self.customerId,self.queueId, self.language, sdkVersion];
+        NSString * queueURL = [NSString stringWithFormat:urlFormat,self.eventDomain,self.customerId, self.eventId, self.queueId, self.language, sdkVersion];
         return queueURL;
     }
     return NULL;
