@@ -47,18 +47,27 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     self.spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     [self.spinner setColor:[UIColor grayColor]];
     [self.spinner startAnimating];
     
-    UIView *topBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 64.0)];
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 64.0)];
+    CGSize size = self.view.bounds.size;
+    
+    UIView *topBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, size.width, 64.0)];
+    [topBar setBackgroundColor:[UIColor whiteColor]];
+    UIView *topBarSeparator = [[UIView alloc] initWithFrame:CGRectMake(0, 63, size.width, 1)];
+    topBarSeparator.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
+    [topBar addSubview:topBarSeparator];
+    
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(size.width - 100, 20, 100, 44.0)];
     [closeButton setTitle:@"close" forState:UIControlStateNormal];
+    [closeButton setTitleColor:[UIColor colorWithRed:235.0/255.0 green:0 blue:139.0/255.0 alpha:1.0] forState:UIControlStateNormal];
     [closeButton addTarget:self action:NSSelectorFromString(@"dismissController") forControlEvents:UIControlEventTouchUpInside];
     [topBar addSubview:closeButton];
     [self.view addSubview:topBar];
     
-    self.webView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 64.0, self.view.bounds.size.width, self.view.bounds.size.height - 64.0)];
+    self.webView = [[UIWebView alloc]initWithFrame:CGRectMake(0, 64.0, size.width, size.height - 64.0)];
     [self.view addSubview:self.webView];
     [self.webView addSubview:self.spinner];
     
@@ -67,6 +76,7 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
     [self.webView loadRequest:request];
     self.webView.delegate = self;
 }
+
 
 - (void)dismissController {
     [self.host dismissViewControllerAnimated:YES completion:^{
