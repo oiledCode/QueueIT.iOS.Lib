@@ -65,6 +65,24 @@ static NSString * const API_ROOT = @"http://%@.queue-it.net/api/queue";
             }];
 }
 
+-(void)getStatus:(NSString *)customerId eventId:(NSString *)eventId queueId:(NSString *)queueId configId:(NSString *)configId {
+    NSString * urlString = [NSString stringWithFormat:@"http://qoqa.queue-it.net/api/nativeapp/qoqa/%@/queue/%@/status", eventId, queueId];
+    [self submitPUTPath:urlString body:@{}
+                       success:^(NSData *data)
+            {
+                NSError *error = nil;
+                NSDictionary *userDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+                if (userDict && [userDict isKindOfClass:[NSDictionary class]])
+                {
+                    NSLog(@"%@",userDict);
+                }
+            }
+            failure:^(NSError *error, NSString* errorMessage)
+            {
+                NSLog(@"Error");
+            }];
+}
+
 - (NSString *)submitPUTPath:(NSString *)path
                        body:(NSDictionary *)bodyDict
                     success:(QueueServiceSuccess)success

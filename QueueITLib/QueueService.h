@@ -17,5 +17,7 @@ typedef void (^QueueServiceFailure)(NSError *error, NSString* errorMessage);
             success:(void(^)(QueueStatus* queueStatus))success
             failure:(QueueServiceFailure)failure;
 
+-(void)getStatus:(NSString*)customerId eventId:(NSString*)eventId queueId:(NSString*)queueId configId:(NSString*)configId;
+
 
 @end
