@@ -89,12 +89,12 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
 - (BOOL)webView:(UIWebView *)webView
     shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    if (!self.authenticated) {
-        self.firstRequest = request;
-        NSURLConnection * connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-        [connection start];
-        return NO;
-    }
+//    if (!self.authenticated) {
+//        self.firstRequest = request;
+//        NSURLConnection * connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+//        [connection start];
+//        return NO;
+//    }
     if (!self.isQueuePassed) {
         NSString* urlString = [[request URL] absoluteString];
         NSString* targetUrlString = self.eventTargetUrl;
@@ -109,7 +109,7 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
                     if (isQueueUrl) {
                         [self.engine updateQueuePageUrl:urlString];
                     }
-                    if ([targetUrl.host containsString:url.host]) {
+                    if ([targetUrl.host isEqualToString:url.host] && [targetUrl.path isEqualToString:url.path]) {
                         self.isQueuePassed = YES;
                         
                         [self.engine.queuePassedDelegate notifyQueueItTokenReceived:[self queueItTokenWithURL:[request URL]]];
