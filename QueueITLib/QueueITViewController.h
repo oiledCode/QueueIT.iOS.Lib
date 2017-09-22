@@ -3,6 +3,8 @@
 
 @interface QueueITViewController : UIViewController
 
+@property (nonatomic, strong) UIImage *closeImage;
+
 -(instancetype)initWithHost:(UIViewController *)host
                 queueEngine:(QueueITEngine*) engine
                    queueUrl:(NSString*)queueUrl

@@ -61,8 +61,12 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
     [topBar addSubview:topBarSeparator];
     
     UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(size.width - 100, 20, 100, 44.0)];
-    [closeButton setTitle:@"close" forState:UIControlStateNormal];
-    [closeButton setTitleColor:[UIColor colorWithRed:235.0/255.0 green:0 blue:139.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    if (_closeImage != nil) {
+        [closeButton setImage:_closeImage forState:UIControlStateNormal];
+    } else {
+        [closeButton setTitle:@"close" forState:UIControlStateNormal];
+        [closeButton setTitleColor:[UIColor colorWithRed:235.0/255.0 green:0 blue:139.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    }
     [closeButton addTarget:self action:NSSelectorFromString(@"dismissController") forControlEvents:UIControlEventTouchUpInside];
     [topBar addSubview:closeButton];
     [self.view addSubview:topBar];
