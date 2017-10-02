@@ -162,7 +162,7 @@ static int INITIAL_WAIT_RETRY_SEC = 1;
                                                                   eventTargetUrl:targetUrl
                                                                       customerId:self.customerId
                                                                          eventId:self.eventId];
-    
+    queueVC.closeImage = self.closeImage;
     if (self.delayInterval > 0) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.delayInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.host presentViewController:queueVC animated:YES completion:nil];
