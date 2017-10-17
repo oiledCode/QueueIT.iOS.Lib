@@ -113,10 +113,10 @@ static NSString * const JAVASCRIPT_GET_BODY_CLASSES = @"document.getElementsByTa
                     if ([targetUrl.host isEqualToString:url.host] && [targetUrl.path isEqualToString:url.path]) {
                         self.isQueuePassed = YES;
                         
-                        [self.engine.queuePassedDelegate notifyQueueItTokenReceived:[self queueItTokenWithURL:[request URL]]];
-                        [self.engine raiseQueuePassed];
                         [self.host dismissViewControllerAnimated:YES completion:^{
                             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                            [self.engine.queuePassedDelegate notifyQueueItTokenReceived:[self queueItTokenWithURL:[request URL]]];
+                            [self.engine raiseQueuePassed];
                         }];
                     } else if (navigationType == UIWebViewNavigationTypeLinkClicked && !isQueueUrl) {
                         [[UIApplication sharedApplication] openURL:[request URL]];
